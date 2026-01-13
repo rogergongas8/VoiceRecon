@@ -24,15 +24,29 @@ namespace VoiceRecon {
                 _rec.LoadGrammar(new Grammar(new GrammarBuilder(comandos)));
                 _rec.SpeechRecognized += Rec_SpeechRecognized;
                 _rec.SetInputToDefaultAudioDevice();
-            } catch (Exception ex) { Log("Error: " + ex.Message, true); }
+                Log("Sistema de reconocimiento de voz inicializado correctamente.");
+            } catch (Exception ex) { 
+                Log("Error al inicializar: " + ex.Message, true);
+                MessageBox.Show("Error al inicializar el reconocimiento de voz:\n\n" + ex.Message + 
+                    "\n\nAsegúrate de tener instalado el paquete de idioma español (es-ES) en Windows.", 
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void StartRecognition() {
+            if (_rec == null) {
+                Log("Error: El motor de reconocimiento no está inicializado.", true);
+                return;
+            }
             _rec.RecognizeAsync(RecognizeMode.Multiple);
             Log("Iniciado");
         }
 
         private void StopRecognition() {
+            if (_rec == null) {
+                Log("Error: El motor de reconocimiento no está inicializado.", true);
+                return;
+            }
             _rec.RecognizeAsyncStop();
             Log("Detenido");
         }
